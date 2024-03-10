@@ -1,0 +1,100 @@
+// Copyright The OpenTelemetry Authors
+// SPDX-License-Identifier: Apache-2.0
+
+package main
+
+import (
+	"fmt"
+
+	"go.uber.org/zap"
+)
+
+// zaplogger implements the tracelog.Logger interface on top of a zap.Logger
+type zaplogger struct{ logger *zap.Logger }
+
+// Trace implements Logger.
+func (z *zaplogger) Trace(_ ...any) { /* N/A */ }
+
+// Tracef implements Logger.
+func (z *zaplogger) Tracef(_ string, _ ...any) { /* N/A */ }
+
+// Debug implements Logger.
+func (z *zaplogger) Debug(v ...any) {
+	z.logger.Debug(fmt.Sprint(v...))
+}
+
+// Debugf implements Logger.
+func (z *zaplogger) Debugf(format string, params ...any) {
+	z.logger.Debug(fmt.Sprintf(format, params...))
+}
+
+// Info implements Logger.
+func (z *zaplogger) Info(v ...any) {
+	z.logger.Info(fmt.Sprint(v...))
+}
+
+// Infof implements Logger.
+func (z *zaplogger) Infof(format string, params ...any) {
+	z.logger.Info(fmt.Sprintf(format, params...))
+}
+
+// Warn implements Logger.
+func (z *zaplogger) Warn(v ...any) error {
+	z.logger.Warn(fmt.Sprint(v...))
+	return nil
+}
+
+// Warnf implements Logger.
+func (z *zaplogger) Warnf(format string, params ...any) error {
+	z.logger.Warn(fmt.Sprintf(format, params...))
+	return nil
+}
+
+// Error implements Logger.
+func (z *zaplogger) Error(v ...any) error {
+	z.logger.Error(fmt.Sprint(v...))
+	return nil
+}
+
+// Errorf implements Logger.
+func (z *zaplogger) Errorf(format string, params ...any) error {
+	z.logger.Error(fmt.Sprintf(format, params...))
+	return nil
+}
+
+// Critical implements Logger.
+func (z *zaplogger) Critical(v ...any) error {
+	z.logger.Error(fmt.Sprint(v...), zap.Bool("critical", true))
+	return nil
+}
+
+// Criticalf implements Logger.
+func (z *zaplogger) Criticalf(format string, params ...any) error {
+	z.logger.Error(fmt.Sprintf(format, params...), zap.Bool("critical", true))
+	return nil
+}
+
+// Flush implements Logger.
+func (z *zaplogger) Flush() {
+	_ = z.logger.Sync()
+}
+
+func (z *zaplogger) Close() {
+	_ = z.logger.Sync()
+}
+
+func (z *zaplogger) Closed() bool {
+	return false
+}
+
+func (z *zaplogger) SetAdditionalStackDepth(depth int) error {
+	return nil
+}
+func (z *zaplogger) SetContext(context interface{}) {}
+
+func (z *zaplogger) traceWithCallDepth(callDepth int, message fmt.Stringer)    {}
+func (z *zaplogger) debugWithCallDepth(callDepth int, message fmt.Stringer)    {}
+func (z *zaplogger) infoWithCallDepth(callDepth int, message fmt.Stringer)     {}
+func (z *zaplogger) warnWithCallDepth(callDepth int, message fmt.Stringer)     {}
+func (z *zaplogger) errorWithCallDepth(callDepth int, message fmt.Stringer)    {}
+func (z *zaplogger) criticalWithCallDepth(callDepth int, message fmt.Stringer) {}
